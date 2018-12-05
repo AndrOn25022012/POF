@@ -12,10 +12,12 @@ import json
 
 RestrictedHorizontaly = True
 
+#comment test commit from vscode
 noPen = QPen(QColor(100,0,255,0))
 myBrush = QBrush(QColor(100,0,255))
-noBrush = QBrush(QColor(100,0,255,0))
-dayColor = QBrush(QColor(48,114,171))
+noBrush = QBrush(QColor(100,0,250,0))
+
+dayColor = QBrush(QColor(48,114,172))
 
 
 def jsonDefault(GraphW):
