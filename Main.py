@@ -348,7 +348,7 @@ class RDVDialog(QDialog):
         grid = QGridLayout(parent)
         grid.setSpacing(3)
 
-        self.edit_1 = QLineEdit()
+        self.edit_1 = QTextEdit()
         grid.addWidget(QLabel('Titre'), 1, 0)
         grid.addWidget(self.edit_1, 1, 1)
 
@@ -379,7 +379,7 @@ class RDVDialog(QDialog):
         #   Return list of values. It need map with str (self.lineedit.text() will return QString)
         #mappe = map(str, [self.edit_1.text(), self.edit_2.text(), self.edit_3.text(), self.edit_4.text()])
         
-        Name = str(self.edit_1.text())
+        Name = str(self.edit_1.toPlainText())
         
         listDate = list(map(int,str(self.edit_2.text()).split("/")))
         date = Date(listDate[0],listDate[1], listDate[2])
@@ -406,7 +406,7 @@ class RDVDialogEdit(QDialog):
         grid = QGridLayout(parent)
         grid.setSpacing(3)
 
-        self.edit_1 = QLineEdit()
+        self.edit_1 = QTextEdit()
         self.edit_1.setText(leRDV.name)
         grid.addWidget(QLabel('Titre'), 1, 0)
         grid.addWidget(self.edit_1, 1, 1)
@@ -441,7 +441,7 @@ class RDVDialogEdit(QDialog):
         #   Return list of values. It need map with str (self.lineedit.text() will return QString)
         #mappe = map(str, [self.edit_1.text(), self.edit_2.text(), self.edit_3.text(), self.edit_4.text()])
         
-        Name = str(self.edit_1.text())
+        Name = str(self.edit_1.toPlainText())
         
         listDate = list(map(int,str(self.edit_2.text()).split("/")))
         date = Date(listDate[0],listDate[1], listDate[2])
