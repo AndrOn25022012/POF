@@ -1,2 +1,5 @@
 # .gitignore
 __pycache__
+.vscode/
+calendrier_fond.pyc
+timeUtils.pyc
