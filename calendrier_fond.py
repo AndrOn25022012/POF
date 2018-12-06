@@ -12,6 +12,7 @@ import json
 #pens (contour) et brushs (fond) globaux
 myPen = QPen(QColor(100,0,255),Qt.NoPen)
 myBrush = QBrush(QColor(100,0,255))
+linePen = QPen(QColor(212,123,103))
 
 
 
@@ -188,7 +189,8 @@ class CDay(QGraphicsRectItem):
         self.setPen(myPen)
 
         for i in range(0,23):
-            line = QGraphicsLineItem(0,i*10+20,200,i*10+20)
+            line = QGraphicsLineItem(0,i*10+20,2000,i*10+20)
+            line.setPen(linePen)
             txtHeure = QGraphicsSimpleTextItem(str(i) + " h00")
             txtHeure.setPos(-12,i*10+18)
             txtHeure.setScale(0.3)

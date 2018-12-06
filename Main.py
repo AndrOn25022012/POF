@@ -436,7 +436,7 @@ class RDVDialogEdit(QDialog):
         self.setLayout(grid)
         self.setGeometry(300, 300, 350, 300)
         self.show()
-
+ 
     def return_strings(self):
         #   Return list of values. It need map with str (self.lineedit.text() will return QString)
         #mappe = map(str, [self.edit_1.text(), self.edit_2.text(), self.edit_3.text(), self.edit_4.text()])
