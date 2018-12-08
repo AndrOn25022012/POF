@@ -10,9 +10,29 @@ from timeUtils import *
 import json
 
 #pens (contour) et brushs (fond) globaux
-myPen = QPen(QColor(100,0,255),Qt.NoPen)
-myBrush = QBrush(QColor(100,0,255))
-linePen = QPen(QColor(212,123,103))
+noPen = QPen(Qt.NoPen)
+penHourLines = QPen(QColor(214, 205, 188))
+penDay = noPen
+penRDV = noPen
+penSem = noPen
+
+
+# Brushes
+# myBrush = QBrush(QColor(100,0,255))
+noBrush = QBrush(Qt.NoBrush)
+BrushDay = QBrush(QColor(70,170,169))
+BrushBg = QBrush(QColor(236,226,208))
+brushRDV = QBrush(QColor(48,116,115))
+brushSem = QBrush(QColor(134,216,215))
+brushTextSem = QBrush(QColor(236,226,208, 200))
+brushTexte = QBrush(Qt.white)
+brushCurDay = QBrush(QColor(109,201,106))
+brushHourBg = QBrush(QColor(27,42,65))
+
+
+brushRDVtxt = QBrush(Qt.white) #deprecated
+colorRDVtxt = QColor(255,255,255)
+
 
 
 
@@ -32,6 +52,7 @@ class calendrier():
         self.curMonthNum = self.curDT.toString('M')
         self.curDay = self.curDT.toString('dddd')
         self.curDayNum = self.curDT.toString('d')
+        self.curWD = self.curD.dayOfWeek()
         self.curYear = self.curDT.toString('yyyy')
 
         self.dateActuel = Date( int(self.curDayNum),int(self.curMonthNum),int(self.curYear))
@@ -41,21 +62,27 @@ class calendrier():
 
         for i in range(-100,100):
 
-            day = CDay(self.dateActuel.addDays(i))
-            day.setPos(0,i*280)
+            day = CDay(self.dateActuel.addDays(i), BrushDay)
+            day.setPos(0,i*280   +   80*((i+self.curWD)//7))
+            #           nbjours        nbdimanches
             if(i == 0):
-                day.setBrush(Qt.green)
+                day.setBrush(brushCurDay)
 
-            if day.day == "Monday" or day.day == "lundi":
-                rectSem = QGraphicsRectItem(0,0,800,280*7-5)
-                rectSem.setBrush(Qt.yellow)
+            if day.day == "Sunday" or day.day == "dimanche":
+                rectSem = QGraphicsRectItem(0,0,900,280*7-5+75)
+                rectSem.setBrush(brushSem)
+                rectSem.setPen(penSem)
 
                 textSem = QGraphicsSimpleTextItem("Sem. du " + str(day.numDay) + " " +str(day.month))
                 textSem.setPos(200,10)
                 textSem.setScale(4)
-                textSem.setParentItem(rectSem)
+                textSem.setZValue(100)
+                textSem.setBrush(brushTextSem)
+                # textSem.setParentItem(rectSem)
 
-                rectSem.setPos(0,i*280)
+                textSem.setPos(200, i*280 + 80*((i+self.curWD)//7) - 75 )
+                self.items.append(textSem)
+                rectSem.setPos(0,i*280 + 80*((i+self.curWD)//7) - 75 )
 
                 self.items.append(rectSem)
                 #self.items.append(textSem)
@@ -67,11 +94,12 @@ class calendrier():
         self.importSaveJSON('saved data.txt')
         #self.importFileCSV("importCal.txt")
         for RDV in self.tablRDV:
+            nbj=-RDV.date.daysTo(self.dateActuel)
             if(RDV.unsetPos == True):
-                RDV.setPos(2,-RDV.date.daysTo(self.dateActuel) * 280 + 20 +10*RDV.time.toHours())
+                RDV.setPos(2, nbj* 280   +    80*((nbj+self.curWD)//7)   +    20 +10*RDV.time.toHours())
                 RDV.unsetPos = False
             else:
-                RDV.setPos(RDV.sX,-RDV.date.daysTo(self.dateActuel) * 280 + 20 +10*RDV.time.toHours())
+                RDV.setPos(RDV.sX,nbj * 280   +    80*((nbj+self.curWD)//7)   +    20 +10*RDV.time.toHours())
 
             #RDV.setPos(2,-RDV.date.daysTo(self.dateActuel) * 280 + 20 +10*RDV.time.toHours())
             #self.items.append(RDV)
@@ -183,27 +211,34 @@ class CDay(QGraphicsRectItem):
         self.month = DT.moisTxt
         self.year = DT.annee
 
-        self.setRect(0,0,150,275)
+        self.setRect(0,0,500,275)
         self.setPos(0,0)
         self.setBrush(brush)
-        self.setPen(myPen)
+        self.setPen(penDay)
 
-        for i in range(0,23):
+        for i in range(0,25):
             line = QGraphicsLineItem(0,i*10+20,2000,i*10+20)
-            line.setPen(linePen)
+            line.setPen(penHourLines)
             txtHeure = QGraphicsSimpleTextItem(str(i) + " h00")
             txtHeure.setPos(-12,i*10+18)
             txtHeure.setScale(0.3)
+            txtHeure.setBrush(brushTexte)
+            txtHeure.setZValue(100)
             self.items.append(line)
             self.items.append(txtHeure)
 
         self.texte = QGraphicsSimpleTextItem()
-        self.texte.setBrush(Qt.black)
-        self.texte.setPos(0,0)
+        self.texte.setBrush(brushTexte)
+        self.texte.setPos(10,0)
         self.texte.setScale(0.9)
         self.texte.setText("{} {} {} {}".format((self.day),(self.numDay),(self.month),(self.year)))
-        self.items.append(self.texte)        
+        self.texte.setZValue(100)
+        self.items.append(self.texte)     
 
+        self.rectSide = QGraphicsRectItem(-15,0,15,275)
+        self.rectSide.setBrush(brushHourBg)
+        self.rectSide.setPen(noPen)
+        self.items.append(self.rectSide)
         for i in self.items:
             i.setParentItem(self)
 
@@ -228,17 +263,18 @@ class RDV(QGraphicsRectItem): # les dates sont censées etre des class:Date et l
             self.unsetPos = False
         self.duree = duree.toHours()
         self.setRect(5,0,100,self.duree*10)
-        self.texte = QGraphicsSimpleTextItem()
-        self.texte.setBrush(Qt.black)
-        self.texte.setPos(0,0)
+        self.texte = QGraphicsTextItem()
+        self.texte.setDefaultTextColor(colorRDVtxt)
+        self.texte.setPos(10,0)
         self.texte.setScale(0.5)
         self.name = name
         self.date = date
         self.time = time
         self.duree = duree
-        self.texte.setText(self.name)
-        self.setBrush(Qt.red)
-        self.setPen(myPen)
+        self.texte.setPlainText(self.name)
+        self.texte.setTextWidth(180)
+        self.setBrush(brushRDV)
+        self.setPen(penRDV)
         self.texte.setParentItem(self)
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)

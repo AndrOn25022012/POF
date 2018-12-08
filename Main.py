@@ -17,19 +17,19 @@ import json
 
 RestrictedHorizontaly = True
 
-#comment test commit from vscode
-noPen = QPen(QColor(100,0,255,0))
-myBrush = QBrush(QColor(100,0,255))
-noBrush = QBrush(QColor(100,0,250,0))
+# #comment test commit from vscode
+# noPen = QPen(QColor(100,0,255,0))
+# myBrush = QBrush(QColor(100,0,255))
+# noBrush = QBrush(QColor(100,0,250,0))
 
-dayColor = QBrush(QColor(48,114,172))
+# dayColor = QBrush(QColor(48,114,172))
 
 
 def jsonDefault(GraphW):
         return GraphW.__dict__
 
-class Communicate(QObject):
-    addRDV = pyqtSignal(str)
+# class Communicate(QObject):
+#     addRDV = pyqtSignal(str)
 
 class Test(QMainWindow):
     def __init__(self):
@@ -82,9 +82,9 @@ class MainW(QWidget):
         
         self.initUI()
     
-    simpleSig = pyqtSignal()
-    c = Communicate()
-    GSIGNAL = False
+    # simpleSig = pyqtSignal()
+    # c = Communicate()
+    # GSIGNAL = False
         
     def initUI(self):
         
@@ -92,14 +92,14 @@ class MainW(QWidget):
 
 
         
-        self.c.addRDV.connect(self.Graph.cal.AddRDVPrint)
+        # self.c.addRDV.connect(self.Graph.cal.AddRDVPrint)
         
-        self.simpleSig.connect(self.simpleSlot)
+        # self.simpleSig.connect(self.simpleSlot)
         #self.GSIGNAL.connect(self.thisIsLocal)
         
 
         self.Menu = MenuW(self)#, self.simpleSig )
-        self.Menu.simpleSig2.connect(self.simpleSlot)
+        # self.Menu.simpleSig2.connect(self.simpleSlot)
 
 
         self.grid = QGridLayout()
@@ -118,8 +118,8 @@ class MainW(QWidget):
         self.GSIGNAL = True
         #self.AddRDVDialog()
 
-    def thisIsLocal():
-        self.AddRDVDialog()
+    # def thisIsLocal():
+    #     self.AddRDVDialog()
 
     #@staticmethod
     def AddRDVDialog(Selfe):
@@ -152,7 +152,7 @@ class MainW(QWidget):
 
 class MenuW(QWidget):
 
-    simpleSig2 = pyqtSignal()
+    # simpleSig2 = pyqtSignal()
     
     def __init__(self, Parent):#, simplSig):
         self.Parent = Parent
@@ -180,7 +180,7 @@ class MenuW(QWidget):
             self.grid.addWidget(button, *position) """
         
         button = QPushButton("Ajout RDV")
-        button.clicked.connect(lambda: self.buttonClicked())
+        button.clicked.connect(lambda: self.addRDV())
         self.grid.addWidget(button, 1,1)
 
         button2 = QPushButton("Edit RDV")
@@ -195,19 +195,15 @@ class MenuW(QWidget):
         self.show()
 
 
-    def buttonClicked(self):#, simplSig):
+    def addRDV(self):
         self.Parent.AddRDVDialog()
-        #self.simpleSig2.emit()
     
-    def EditRDV(self):#, simplSig):
+    def EditRDV(self):
         self.Parent.EditRDV()
 
     def exportPDF(self):
         self.Parent.Graph.exportPDF()
 
-    """ def AddRdvDlg(self):
-        dialog = AddRDVDialog()
-        self.data = dialog.get_data() """
 
 
 
@@ -220,8 +216,7 @@ class GraphW(QGraphicsView):
     def initUI(self):
         self.scene = aScene()
         pen = QPen(Qt.red)
-        self.scene.setBackgroundBrush(Qt.green)
-        #self.scene.setSceneRect(-40000,-100000,80000,200000)
+        self.scene.setBackgroundBrush(BrushBg)
         self.setScene(self.scene)
         shadowRect = QGraphicsRectItem(-40000,0,80000,1)
         shadowRect.setPen(noPen)
@@ -514,15 +509,22 @@ class aScene(QGraphicsScene):
     def __init__(self, parent = None):
         self.Parent = parent
         super().__init__(self.Parent)
+        self.lastPoint = QPointF(0,0)
+        self.mousePressed = False
     
     def mousePressEvent(self, event):
         super(aScene, self).mousePressEvent(event)
         self.lastPoint =QPointF(event.pos().x() ,event.scenePos().y() - event.pos().y())
+        self.mousePressed = True
         #print("m")
+
+    def mouseReleaseEvent(self, event):
+        super(aScene, self).mouseReleaseEvent(event)
+        self.mousePressed = False
     
     def mouseMoveEvent(self, event):
         #super(aScene, self).mouseMoveEvent(event)
-        if RestrictedHorizontaly: # boolean to trigger weather to restrict it horizontally 
+        if RestrictedHorizontaly and self.mousePressed: # boolean to trigger weather to restrict it horizontally 
             x = event.scenePos().x() - self.lastPoint.x()
             y = self.lastPoint.y() #+ event.pos().y()
             for item in self.selectedItems():
