@@ -5,8 +5,13 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from PyQt5.QtPrintSupport import *
 import sys
 from calendrier_fond import *
+import fbchat
+from fbchat.models import *
+from getpass import getpass
+
 
 import json
 
@@ -182,6 +187,10 @@ class MenuW(QWidget):
         button2.clicked.connect(lambda: self.EditRDV())
         self.grid.addWidget(button2, 1,2)
 
+        button3 = QPushButton("Export PDF")
+        button3.clicked.connect(lambda: self.exportPDF())
+        self.grid.addWidget(button3, 2,1)
+
         #self.move(300, 150)
         self.show()
 
@@ -192,6 +201,9 @@ class MenuW(QWidget):
     
     def EditRDV(self):#, simplSig):
         self.Parent.EditRDV()
+
+    def exportPDF(self):
+        self.Parent.Graph.exportPDF()
 
     """ def AddRdvDlg(self):
         dialog = AddRDVDialog()
@@ -331,6 +343,40 @@ class GraphW(QGraphicsView):
             self.scale(factor, factor)
         if operator < 0:
             self.scale(1.0/factor, 1.0/factor)
+
+    def exportPDF(self):
+        printer = QPrinter(QPrinter.HighResolution)
+        printer.setPaperSize(QPrinter.A4);
+        printer.setOrientation( QPrinter.Portrait )
+        printer.setOutputFormat( QPrinter.PdfFormat )
+        printer.setOutputFileName( "/home/vince/Bureau/test.pdf" )
+        painter = QPainter();
+        #printDialog = QPrintDialog(printer, self)
+        if (painter.begin(printer)):#printDialog.exec() == QDialog.Accepted):
+            width = 1100 #self.scene.itemsBoundingRect().width()
+            totHeight = self.scene.itemsBoundingRect().height() // 2 - 500
+            pHeight = 1.5 * width
+            nPages = totHeight // pHeight
+            for i in range(0, int(nPages)):
+                target = QRectF(-50,-50 + pHeight*i,width, pHeight)
+                renderedPage = self.scene.render(painter, QRectF(0,0,0,0), target )
+                printer.newPage()
+            
+            #painter.drawPixmap(768, 1024, screen)
+            painter.end()
+        
+
+        # no_of_friends = int(raw_input("Number of friends: ")) 
+        # for i in xrange(no_of_friends): 
+        #     name = str(raw_input("Name: ")) 
+        #     friends = client.getUsers(name)  # return a list of names 
+        #     friend = friends[0] 
+        #     
+        #     
+        #     if sent: 
+        #         print("Message sent successfully!")
+
+        # self.render(painter);
 
 
 
@@ -487,6 +533,8 @@ class aScene(QGraphicsScene):
         for item in self.selectedItems():
             self.removeItem(item)
             print("deleted")
+
+
 
 
 
