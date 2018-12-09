@@ -423,6 +423,8 @@ class RDVDialog(QDialog):
         Name = str(self.edit_1.toPlainText())
         
         listDate = list(map(int,str(self.edit_2.text()).split("/")))
+        if listDate[2]<100 :
+            listDate[2] = listDate[2] + 2000
         date = Date(listDate[0],listDate[1], listDate[2])
 
         listTime = list(map(int,str(self.edit_3.text()).split("h")))
@@ -485,6 +487,8 @@ class RDVDialogEdit(QDialog):
         Name = str(self.edit_1.toPlainText())
         
         listDate = list(map(int,str(self.edit_2.text()).split("/")))
+        if listDate[2]<100 :
+            listDate[2] = lisDate[2] + 2000
         date = Date(listDate[0],listDate[1], listDate[2])
 
         listTime = list(map(int,str(self.edit_3.text()).split("h")))

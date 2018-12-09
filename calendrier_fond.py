@@ -144,12 +144,9 @@ class calendrier():
             #print("appened")
         
 
+    def h00posByDate(self,date):
+        return date.daysTo(self.dateActuel)*280+hWeekHead*nbDimancheEntre(self.dateActuel,self.dateActuel.daysTo(date)) + 20
 
-
-
-
-    def AddRDVPrint(self,data):
-        print(data)
 
 
 
@@ -205,7 +202,7 @@ class calendrier():
             print("Erreur: événement" + titre + date.toString() +": durée non définie")
             return
         newRDV = RDV(titre, date, time, duree)
-        newRDV.setPos(2,-newRDV.date.daysTo(self.dateActuel) * 280 + 20 +10*newRDV.time.toHours())
+        newRDV.setPos(2,self.h00posByDate(newRDV.date)+10*newRDV.time.toHours())
         self.tablRDV.append(newRDV)
         self.items.append(newRDV)
         self.itemQueue.append(newRDV)
