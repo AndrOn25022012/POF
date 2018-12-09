@@ -164,7 +164,7 @@ class calendrier():
                 date = Date(p['date']['jour'], p['date']['mois'], p['date']['annee'])
                 time = Time(p['time']['heure'], p['time']['minute'])
                 duree = Time(p['duree']['heure'], p['duree']['minute'])
-                if(p.get('sX') and p.get('sY')):
+                if(p.get('sX')):
                     X = float(p.get('sX'))
                     self.addRDVInit(p['name'],date,time,duree,X)
                 else:
