@@ -566,7 +566,8 @@ class aScene(QGraphicsScene):
             x = event.scenePos().x() - self.lastPoint.x()
             y = self.lastPoint.y() #+ event.pos().y()
             for item in self.selectedItems():
-                item.setPos(QPointF(x,y))# which is the QgraphicItem that you have or selected before
+                # delta = item.scenePos().x() - x
+                item.setPos(QPointF(x ,item.calculatedY))# which is the QgraphicItem that you have or selected before
                 #print("x: " + str(event.pos().x())+ " y : " + str(y))
 
     def delEvent(self):

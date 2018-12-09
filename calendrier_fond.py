@@ -314,7 +314,7 @@ class RDV(QGraphicsRectItem): # les dates sont censées etre des class:Date et l
         else:
             self.sX = X
             self.setPosY(X)
-
+        self.calculatedY = self.scenePos().y()
         dureeH = duree.toHours()
         self.setRect(5,0,100,dureeH*10)
         self.texte = QGraphicsTextItem()
