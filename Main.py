@@ -113,9 +113,9 @@ class MainW(QWidget):
         self.show()
 
     
-    def simpleSlot(argumentInutile):
-        print("hello")
-        self.GSIGNAL = True
+    # def simpleSlot(argumentInutile):
+    #     print("hello")
+    #     self.GSIGNAL = True
         #self.AddRDVDialog()
 
     # def thisIsLocal():
@@ -348,7 +348,7 @@ class GraphW(QGraphicsView):
         painter = QPainter();
         #printDialog = QPrintDialog(printer, self)
         if (painter.begin(printer)):#printDialog.exec() == QDialog.Accepted):
-            width = 1100 #self.scene.itemsBoundingRect().width()
+            width = wWeek * 1.1 #self.scene.itemsBoundingRect().width()
             totHeight = self.scene.itemsBoundingRect().height() // 2 - 500
             pHeight = 1.5 * width
             nPages = totHeight // pHeight

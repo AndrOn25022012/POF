@@ -25,6 +25,9 @@ for i in listNumJoursBisxt:
 
 listJours = "lundi mardi mercredi jeudi vendredi samedi dimanche".split()
 
+def nbDimancheEntre(date, nbJours):
+    return (nbJours+date.jourSemNum+1)//7
+
 def nbJMois(mois, annee):
     if isBisxt(annee):
         return listNumJoursBisxt[mois-1]
@@ -66,8 +69,11 @@ class Date():
         
         if self.jour == 6 and self.mois == 8 and self.annee == 1993:
             self.jourSem = "vendredi"
+            self.jourSemNum = 4
         else: 
-            self.jourSem = listJours[ ( -self.daysTo(Date(6,8,1993))+4 ) % 7 ]
+            self.jourSemNum = ( -self.daysTo(Date(6,8,1993))+4 ) % 7
+            self.jourSem = listJours[self.jourSemNum]
+            
 
     def toString(self):
         return(str(self.jour) +"/"+ str(self.mois) +"/"+ str(self.annee))
