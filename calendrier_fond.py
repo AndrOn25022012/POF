@@ -39,6 +39,11 @@ colorRDVtxt = QColor(255,255,255)
 hWeekHead = 100
 wWeek = 2700
 
+def h00posByDate(date):
+    curDT = QDateTime.currentDateTime()
+    dateActuel = Date( int(curDT.toString('d')),int(curDT.toString('M')),int(curDT.toString('yyyy')))
+    return -date.daysTo(dateActuel)*280+hWeekHead*nbDimancheEntre(dateActuel,dateActuel.daysTo(date)) + 20
+
 
 
 
@@ -131,14 +136,14 @@ class calendrier():
         self.tablRDV = []
         self.importSaveJSON('saved data.txt')
         #self.importFileCSV("importCal.txt")
-        for RDV in self.tablRDV:
+        """ for RDV in self.tablRDV:
             nbj=-RDV.date.daysTo(self.dateActuel)
             if(RDV.unsetPos == True):
                 RDV.setPos(2, nbj* 280   +    hWeekHead*((nbj+self.curWD)//7)   +    20 +10*RDV.time.toHours())
                 RDV.unsetPos = False
             else:
                 RDV.setPos(RDV.sX,nbj * 280   +    hWeekHead*((nbj+self.curWD)//7)   +    20 +10*RDV.time.toHours())
-
+ """
             #RDV.setPos(2,-RDV.date.daysTo(self.dateActuel) * 280 + 20 +10*RDV.time.toHours())
             #self.items.append(RDV)
             #print("appened")
@@ -159,8 +164,7 @@ class calendrier():
                 duree = Time(p['duree']['heure'], p['duree']['minute'])
                 if(p.get('sX') and p.get('sY')):
                     X = float(p.get('sX'))
-                    Y = float(p.get('sY'))
-                    self.addRDVInit(p['name'],date,time,duree,X,Y)
+                    self.addRDVInit(p['name'],date,time,duree,X)
                 else:
                     self.addRDVInit(p['name'],date,time,duree)
             #print(self.tablRDV)
@@ -195,30 +199,41 @@ class calendrier():
             duree = Time(diffH,diffM)
             self.addRDVInit(i[0],date,time,duree)
         
-    def addOneRDV(self, titre, date, time, duree):
-        if titre == "\"Techniques de Gestion APPLICATION\"":
-            f = 1
-        if duree.toHours() == 0:
-            print("Erreur: événement" + titre + date.toString() +": durée non définie")
-            return
-        newRDV = RDV(titre, date, time, duree)
-        newRDV.setPos(2,self.h00posByDate(newRDV.date)+10*newRDV.time.toHours())
-        self.tablRDV.append(newRDV)
-        self.items.append(newRDV)
-        self.itemQueue.append(newRDV)
+    def addOneRDV(self, titre, date, time, duree, X = None):
+        # if titre == "\"Techniques de Gestion APPLICATION\"":
+        #     f = 1
+        # if duree.toHours() == 0:
+        #     print("Erreur: événement" + titre + date.toString() +": durée non définie")
+        #     return
+        hFin = time + duree
+        if hFin.toHours() > 24:
+            dureeAvtMinuit = Time(24,0) - time
+            newRDV = RDV(titre, date, time, dureeAvtMinuit, X = X)
+            newRDV.setPos(2,self.h00posByDate(newRDV.date)+10*newRDV.time.toHours())
+            self.tablRDV.append(newRDV)
+            self.items.append(newRDV)
+            self.itemQueue.append(newRDV)
+            dureeRest = duree - dureeAvtMinuit
+            self.addOneRDV(titre,date.addDays(1),Time(0,0), dureeRest)
+        else:
+            newRDV = RDV(titre, date, time, duree,X)
+            # newRDV.setPos(2,self.h00posByDate(newRDV.date)+10*newRDV.time.toHours())
+            self.tablRDV.append(newRDV)
+            self.items.append(newRDV)
+            self.itemQueue.append(newRDV)
 
-    def addRDVInit(self, titre, date, time, duree, X = None, Y = None):
+    def addRDVInit(self, titre, date, time, duree, X = None):
         if titre == "\"Techniques de Gestion APPLICATION\"":
             f = 1
         if duree.toHours() == 0:
             print("Erreur: événement" + titre + date.toString() +": durée non définie")
             return
-        newRDV = RDV(titre, date, time, duree, X, Y)
+        newRDV = RDV(titre, date, time, duree, X)
         self.tablRDV.append(newRDV)
         self.items.append(newRDV)
 
     def getItemQueue(self):
-        result = self.itemQueue[0]
+        result = self.itemQueue
         self.itemQueue = []
         return result
 
@@ -286,26 +301,25 @@ class CDay(QGraphicsRectItem):
 class RDV(QGraphicsRectItem): # les dates sont censées etre des class:Date et les time, duree des class:Time
 
 
-    def __init__(self, name, date, time, duree, X = None, Y = None):
+    def __init__(self, name, date, time, duree, X = None):
         super().__init__()
-        if(X == None and Y == None ):
-            self.unsetPos = True
-            self.setPos(0,200)
-        else:
-            self.sX = X
-            self.sY = Y
-            self.setPos(X,Y)
-            self.unsetPos = False
-        self.duree = duree.toHours()
-        self.setRect(5,0,100,self.duree*10)
-        self.texte = QGraphicsTextItem()
-        self.texte.setDefaultTextColor(colorRDVtxt)
-        self.texte.setPos(10,0)
-        self.texte.setScale(0.5)
         self.name = name
         self.date = date
         self.time = time
         self.duree = duree
+        if(X == None ):
+            self.setPosY(0)
+        else:
+            self.sX = X
+            self.setPosY(X)
+
+        dureeH = duree.toHours()
+        self.setRect(5,0,100,dureeH*10)
+        self.texte = QGraphicsTextItem()
+        self.texte.setDefaultTextColor(colorRDVtxt)
+        self.texte.setPos(10,0)
+        self.texte.setScale(0.5)
+        
         self.texte.setPlainText(self.name)
         self.texte.setTextWidth(180)
         self.setBrush(brushRDV)
@@ -321,6 +335,9 @@ class RDV(QGraphicsRectItem): # les dates sont censées etre des class:Date et l
             self.sX = value.x()
             self.sY = value.y()
         return value
+    
+    def setPosY(self, posX):
+        self.setPos(posX, h00posByDate(self.date) + 10 * self.time.toHours())
 
 
 

@@ -11,6 +11,7 @@ from calendrier_fond import *
 import fbchat
 from fbchat.models import *
 from getpass import getpass
+import re
 
 
 import json
@@ -129,7 +130,8 @@ class MainW(QWidget):
         dialog.exec_()
         data = dialog.return_strings()
         Selfe.Graph.cal.addOneRDV(data[0],data[1], data[2], data[3])
-        Selfe.Graph.scene.addItem(Selfe.Graph.cal.getItemQueue())
+        for item in Selfe.Graph.cal.getItemQueue():
+            Selfe.Graph.scene.addItem(item)
         # map(str, [self.q1Edit.text(), self.q2Edit.text()])
 
     def EditRDV(Selfe):
@@ -139,11 +141,12 @@ class MainW(QWidget):
             print("Pas de RDV sélectionné")
             return
 
-        dialog = RDVDialogEdit(RDV, parent = Selfe)
+        dialog = RDVDialog(leRDV = RDV, parent = Selfe)
         dialog.exec_()
         data = dialog.return_strings()
-        Selfe.Graph.cal.addOneRDV(data[0],data[1], data[2], data[3])
-        Selfe.Graph.scene.addItem(Selfe.Graph.cal.getItemQueue())
+        Selfe.Graph.cal.addOneRDV(data[0],data[1], data[2], data[3], RDV.scenePos().x())
+        for item in Selfe.Graph.cal.getItemQueue():
+            Selfe.Graph.scene.addItem(item)
         Selfe.Graph.scene.removeItem(RDV)
 
 
@@ -376,9 +379,9 @@ class GraphW(QGraphicsView):
 
 
         
-
+""" 
 class RDVDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, RDV = None ,parent=None):
         QDialog.__init__(parent)
         self.Parent = parent
         super().__init__(self.Parent)
@@ -437,42 +440,53 @@ class RDVDialog(QDialog):
         duree = Time(listTime[0], listTime[1])
 
         return [Name, date, time, duree]
+ """
 
 
 
-
-class RDVDialogEdit(QDialog):
-    def __init__(self, leRDV, parent = None):
+class RDVDialog(QDialog):
+    def __init__(self, leRDV = None, parent = None):
         QDialog.__init__(parent)
         self.Parent = parent
         super().__init__(self.Parent)
         self.initUI(parent, leRDV)
     
     def initUI(self, parent, leRDV):
+        if leRDV == None:
+            name = ""
+            date = ""
+            time = ""
+            duree = ""
+        else:
+            name = leRDV.name
+            date = leRDV.date.toString()
+            time = leRDV.time.toString()
+            duree = leRDV.duree.toString()
+            
         grid = QGridLayout(parent)
         grid.setSpacing(3)
 
         self.edit_1 = QTextEdit()
-        self.edit_1.setText(leRDV.name)
+        self.edit_1.setText(name)
         self.edit_1.setTabChangesFocus(True)
         grid.addWidget(QLabel('Titre'), 1, 0)
         grid.addWidget(self.edit_1, 1, 1)
 
         #   add layout for second widget
         self.edit_2 = QLineEdit()
-        self.edit_2.setText(leRDV.date.toString())
+        self.edit_2.setText(date)
         grid.addWidget(QLabel('Date'), 2, 0)
         grid.addWidget(self.edit_2, 2, 1)
 
         #   add layout for widget 3
         self.edit_3 = QLineEdit()
-        self.edit_3.setText(str(leRDV.time.toString()))
+        self.edit_3.setText(time)
         grid.addWidget(QLabel('Heure'), 3, 0)
         grid.addWidget(self.edit_3, 3, 1)
 
         #   add layout for widget 4
         self.edit_4 = QLineEdit()
-        self.edit_4.setText(str(leRDV.duree.toString()))
+        self.edit_4.setText(duree)
         grid.addWidget(QLabel('Durée'), 4, 0)
         grid.addWidget(self.edit_4, 4, 1)
 
@@ -489,18 +503,27 @@ class RDVDialogEdit(QDialog):
         #mappe = map(str, [self.edit_1.text(), self.edit_2.text(), self.edit_3.text(), self.edit_4.text()])
         
         Name = str(self.edit_1.toPlainText())
-        
-        listDate = list(map(int,str(self.edit_2.text()).split("/")))
+        listDate = []
+        if self.edit_2.text() == "":
+            listDate.append(int(QDate.currentDate().toString('d')))
+        else:
+            listDate = list(map(int,str(self.edit_2.text()).split("/")))
+        if len(listDate) == 1:
+            listDate.append(int(QDate.currentDate().toString('M')))
         if len(listDate) == 2:
             listDate.append(int(QDate.currentDate().toString('yyyy')))
         elif listDate[2]<100 :
             listDate[2] = listDate[2] + 2000
         date = Date(listDate[0],listDate[1], listDate[2])
 
-        listTime = list(map(int,str(self.edit_3.text()).split("h")))
+        listTime = list(map(int,[x for x in re.split("h|H|,|:", str(self.edit_3.text())) if x]))
+        if len(listTime) == 1:
+            listTime.append(0)
         time = Time(listTime[0], listTime[1])
 
-        listTime = list(map(int,str(self.edit_4.text()).split("h")))
+        listTime = list(map(int,[x for x in re.split("h|H|,|:", str(self.edit_4.text())) if x]))
+        if len(listTime) == 1:
+            listTime.append(0)
         duree = Time(listTime[0], listTime[1])
 
         return [Name, date, time, duree]
