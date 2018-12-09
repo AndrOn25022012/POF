@@ -390,6 +390,7 @@ class RDVDialog(QDialog):
         grid.setSpacing(3)
 
         self.edit_1 = QTextEdit()
+        self.edit_1.setTabChangesFocus(True)
         grid.addWidget(QLabel('Titre'), 1, 0)
         grid.addWidget(self.edit_1, 1, 1)
 
@@ -453,6 +454,7 @@ class RDVDialogEdit(QDialog):
 
         self.edit_1 = QTextEdit()
         self.edit_1.setText(leRDV.name)
+        self.edit_1.setTabChangesFocus(True)
         grid.addWidget(QLabel('Titre'), 1, 0)
         grid.addWidget(self.edit_1, 1, 1)
 
