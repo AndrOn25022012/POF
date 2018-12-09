@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+
 import random
 import sys
 from timeUtils import *
@@ -35,6 +36,7 @@ brushTextMois = QBrush(QColor(27,42,65))
 
 brushRDVtxt = QBrush(Qt.white) #deprecated
 colorRDVtxt = QColor(255,255,255)
+colorRDVtxtFond = "40,99,98"
 
 hWeekHead = 100
 wWeek = 2700
@@ -316,11 +318,12 @@ class RDV(QGraphicsRectItem): # les dates sont censées etre des class:Date et l
         dureeH = duree.toHours()
         self.setRect(5,0,100,dureeH*10)
         self.texte = QGraphicsTextItem()
+        self.texte.setHtml(str("<div style='background:rgba(" + colorRDVtxtFond +", 50%);'>" + str(self.name) + str("</div>") ))
         self.texte.setDefaultTextColor(colorRDVtxt)
         self.texte.setPos(10,0)
         self.texte.setScale(0.5)
         
-        self.texte.setPlainText(self.name)
+        # self.texte.setPlainText(self.name)
         self.texte.setTextWidth(180)
         self.setBrush(brushRDV)
         self.setPen(penRDV)
