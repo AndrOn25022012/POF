@@ -492,9 +492,9 @@ class RDVDialogEdit(QDialog):
         
         listDate = list(map(int,str(self.edit_2.text()).split("/")))
         if len(listDate) == 2:
-            listDate.append(str(QDate.currentDate().toString('yyyy')))
+            listDate.append(int(QDate.currentDate().toString('yyyy')))
         elif listDate[2]<100 :
-            listDate[2] = lisDate[2] + 2000
+            listDate[2] = listDate[2] + 2000
         date = Date(listDate[0],listDate[1], listDate[2])
 
         listTime = list(map(int,str(self.edit_3.text()).split("h")))
