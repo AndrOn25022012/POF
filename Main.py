@@ -108,6 +108,11 @@ class MainW(QWidget):
         self.grid.addWidget(self.Graph, *(1,1))
         self.grid.addWidget(self.Menu, *(1,2))
 
+        self.addRDVShortcut = QShortcut(QKeySequence("Ctrl+A"), self)
+        self.addRDVShortcut.activated.connect(self.AddRDVDialog)
+        self.editRDVShortcut = QShortcut(QKeySequence("Ctrl+E"), self)
+        self.editRDVShortcut.activated.connect(self.EditRDV)
+
         #self.move(300, 150)
         self.Menu.show()
         self.Graph.show()
