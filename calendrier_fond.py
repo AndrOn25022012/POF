@@ -145,7 +145,7 @@ class calendrier():
         
 
     def h00posByDate(self,date):
-        return date.daysTo(self.dateActuel)*280+hWeekHead*nbDimancheEntre(self.dateActuel,self.dateActuel.daysTo(date)) + 20
+        return -date.daysTo(self.dateActuel)*280+hWeekHead*nbDimancheEntre(self.dateActuel,self.dateActuel.daysTo(date)) + 20
 
 
 
