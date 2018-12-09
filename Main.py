@@ -351,7 +351,7 @@ class GraphW(QGraphicsView):
             width = wWeek * 1.1 #self.scene.itemsBoundingRect().width()
             totHeight = self.scene.itemsBoundingRect().height() // 2 - 500
             pHeight = 1.5 * width
-            nPages = totHeight // pHeight
+            nPages = totHeight // (pHeight * 4)
             for i in range(0, int(nPages)):
                 target = QRectF(-50,-50 + pHeight*i,width, pHeight)
                 renderedPage = self.scene.render(painter, QRectF(0,0,0,0), target )
