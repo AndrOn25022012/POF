@@ -18,19 +18,12 @@ import json
 
 RestrictedHorizontaly = True
 
-# #comment test commit from vscode
-# noPen = QPen(QColor(100,0,255,0))
-# myBrush = QBrush(QColor(100,0,255))
-# noBrush = QBrush(QColor(100,0,250,0))
-
-# dayColor = QBrush(QColor(48,114,172))
 
 
 def jsonDefault(GraphW):
         return GraphW.__dict__
 
-# class Communicate(QObject):
-#     addRDV = pyqtSignal(str)
+
 
 class Test(QMainWindow):
     def __init__(self):
@@ -83,24 +76,13 @@ class MainW(QWidget):
         
         self.initUI()
     
-    # simpleSig = pyqtSignal()
-    # c = Communicate()
-    # GSIGNAL = False
         
     def initUI(self):
         
         self.Graph = GraphW(self)
-
-
-        
-        # self.c.addRDV.connect(self.Graph.cal.AddRDVPrint)
-        
-        # self.simpleSig.connect(self.simpleSlot)
-        #self.GSIGNAL.connect(self.thisIsLocal)
         
 
-        self.Menu = MenuW(self)#, self.simpleSig )
-        # self.Menu.simpleSig2.connect(self.simpleSlot)
+        self.Menu = MenuW(self)
 
 
         self.grid = QGridLayout()
@@ -113,21 +95,10 @@ class MainW(QWidget):
         self.editRDVShortcut = QShortcut(QKeySequence("Ctrl+E"), self)
         self.editRDVShortcut.activated.connect(self.EditRDV)
 
-        #self.move(300, 150)
         self.Menu.show()
         self.Graph.show()
         self.show()
 
-    
-    # def simpleSlot(argumentInutile):
-    #     print("hello")
-    #     self.GSIGNAL = True
-        #self.AddRDVDialog()
-
-    # def thisIsLocal():
-    #     self.AddRDVDialog()
-
-    #@staticmethod
     def AddRDVDialog(Selfe):
         print("hello2")
 
@@ -137,7 +108,6 @@ class MainW(QWidget):
         Selfe.Graph.cal.addOneRDV(data[0],data[1], data[2], data[3])
         for item in Selfe.Graph.cal.getItemQueue():
             Selfe.Graph.scene.addItem(item)
-        # map(str, [self.q1Edit.text(), self.q2Edit.text()])
 
     def EditRDV(Selfe):
         try:
@@ -159,33 +129,15 @@ class MainW(QWidget):
 
 
 class MenuW(QWidget):
-
-    # simpleSig2 = pyqtSignal()
     
-    def __init__(self, Parent):#, simplSig):
+    def __init__(self, Parent):
         self.Parent = Parent
         super().__init__(self.Parent)
-        self.initUI(self.Parent)#, simplSig)
+        self.initUI(self.Parent)
         
-    def initUI(self, Parent):#, simplSig):
+    def initUI(self, Parent):
         self.grid = QGridLayout()
         self.setLayout(self.grid)
- 
-        """ names = ['Ajout RDV', 'Bck', '', 'Close',
-                 '7', '8', '9', '/',
-                '4', '5', '6', '*',
-                 '1', '2', '3', '-',
-                '0', '.', '=', '+']
-        
-        positions = [(i,j) for i in range(5) for j in range(4)]
-        
-        for position, name in zip(positions, names):
-            
-            if name == '':
-                continue
-            button = QPushButton(name)
-            button.clicked.connect(lambda: self.buttonClicked())
-            self.grid.addWidget(button, *position) """
         
         button = QPushButton("Ajout RDV")
         button.clicked.connect(lambda: self.addRDV())
@@ -199,7 +151,6 @@ class MenuW(QWidget):
         button3.clicked.connect(lambda: self.exportPDF())
         self.grid.addWidget(button3, 2,1)
 
-        #self.move(300, 150)
         self.show()
 
 
@@ -232,22 +183,15 @@ class GraphW(QGraphicsView):
         self.rectangle = QGraphicsRectItem(30,10,50,50)
         self.scene.addItem(shadowRect) # dessine le rectangle
         self.scene.addItem(self.rectangle)
-        #self.scene.addText()
         self.setFocusPolicy(Qt.WheelFocus)
         self.setRenderHints(QPainter.Antialiasing)
         self.S_Pressed = False
         self.middlePressed = False
         self.rightPressed = False
-        """ button = QPushButton('Hello !')
-        button.clicked.connect(lambda: self.hello())
-        self.scene.addWidget(button) """
     
         self.cal = calendrier()
         for i in self.cal.items:
             self.scene.addItem(i)
-        """ button = QPushButton('Hello !')
-        button.clicked.connect(lambda: self.hello())
-        self.scene.addWidget(button)  """
 
     def addRDV(name, date, time, duree):
         self.cal.AddRDV(name, date, time, duree)
@@ -263,31 +207,9 @@ class GraphW(QGraphicsView):
         file.write(jsonScene)
         file.close()
 
-        """ grid = QGridLayout()
-        grid.setSpacing(10)
 
-        grid.addWidget(self., 1, 0, 50, 1)
-        
-        self.setLayout(grid)  """
-
-    #lorsque j'affiche un bouton, permet au clic de pop une fenetre 'hello'
-        
-    def hello(self):
-        reply = QMessageBox()
-        reply.setText("hello!!!")
-        reply.exec_()
-
-    #override de la fonction premier plan pour dessiner des items flottants au dessus de la partie zoomable
-    def drawForeground(self, painter, rect):
-        #super(GraphW, self).drawForeground( painter, rect)
-        #painter.resetTransform()
-        button = QPushButton('Hello !')
-        button.clicked.connect(lambda: self.hello())
-        #self.rectangle.setPos(rect.x() +10 , rect.y() + 10 )
-        #button.setPos(100,100)
-        #self.scene.addWidget(button)
-        #self.scene.addItem(rectangle)
-
+    #override de la fonction premier plan
+    # def drawForeground(self, painter, rect):
             
     #overrides des fonctions de gestion d'évents (l'héritage est commenté pour wheel car un scroll s'ajoute au zoom sinon)
 
@@ -355,8 +277,8 @@ class GraphW(QGraphicsView):
         printer.setOutputFileName( "/home/vince/Bureau/test.pdf" )
         painter = QPainter();
         #printDialog = QPrintDialog(printer, self)
-        if (painter.begin(printer)):#printDialog.exec() == QDialog.Accepted):
-            width = wWeek * 1.1 #self.scene.itemsBoundingRect().width()
+        if (painter.begin(printer)):
+            width = wWeek * 1.1
             totHeight = self.scene.itemsBoundingRect().height() // 2 - 500
             pHeight = 1.5 * width
             nPages = totHeight // (pHeight * 4)
@@ -365,9 +287,10 @@ class GraphW(QGraphicsView):
                 renderedPage = self.scene.render(painter, QRectF(0,0,0,0), target )
                 printer.newPage()
             
-            #painter.drawPixmap(768, 1024, screen)
             painter.end()
         
+
+        # TOOLS FOR FACEBOOK MODULE
 
         # no_of_friends = int(raw_input("Number of friends: ")) 
         # for i in xrange(no_of_friends): 
@@ -380,72 +303,6 @@ class GraphW(QGraphicsView):
         #         print("Message sent successfully!")
 
         # self.render(painter);
-
-
-
-        
-""" 
-class RDVDialog(QDialog):
-    def __init__(self, RDV = None ,parent=None):
-        QDialog.__init__(parent)
-        self.Parent = parent
-        super().__init__(self.Parent)
-        self.initUI(parent)
-        
-        
-    def initUI(self, parent):
-        grid = QGridLayout(parent)
-        grid.setSpacing(3)
-
-        self.edit_1 = QTextEdit()
-        self.edit_1.setTabChangesFocus(True)
-        grid.addWidget(QLabel('Titre'), 1, 0)
-        grid.addWidget(self.edit_1, 1, 1)
-
-        #   add layout for second widget
-        self.edit_2 = QLineEdit()
-        grid.addWidget(QLabel('Date'), 2, 0)
-        grid.addWidget(self.edit_2, 2, 1)
-
-        #   add layout for widget 3
-        self.edit_3 = QLineEdit()
-        grid.addWidget(QLabel('Heure'), 3, 0)
-        grid.addWidget(self.edit_3, 3, 1)
-
-        #   add layout for widget 4
-        self.edit_4 = QLineEdit()
-        grid.addWidget(QLabel('Durée'), 4, 0)
-        grid.addWidget(self.edit_4, 4, 1)
-
-        apply_button = QPushButton('Apply')#, self)
-        apply_button.clicked.connect(self.close)
-
-        grid.addWidget(apply_button, 6, 3)
-        self.setLayout(grid)
-        self.setGeometry(300, 300, 350, 300)
-        self.show()
-
-    def return_strings(self):
-        #   Return list of values. It need map with str (self.lineedit.text() will return QString)
-        #mappe = map(str, [self.edit_1.text(), self.edit_2.text(), self.edit_3.text(), self.edit_4.text()])
-        
-        Name = str(self.edit_1.toPlainText())
-        
-        listDate = list(map(int,str(self.edit_2.text()).split("/")))
-        if len(listDate) == 2:
-            listDate.append(int(QDate.currentDate().toString('yyyy')))
-        elif listDate[2]<100 :
-            listDate[2] = listDate[2] + 2000
-        date = Date(listDate[0],listDate[1], listDate[2])
-
-        listTime = list(map(int,str(self.edit_3.text()).split("h")))
-        time = Time(listTime[0], listTime[1])
-
-        listTime = list(map(int,str(self.edit_4.text()).split("h")))
-        duree = Time(listTime[0], listTime[1])
-
-        return [Name, date, time, duree]
- """
 
 
 
@@ -535,14 +392,6 @@ class RDVDialog(QDialog):
 
 
 
-
-    #@staticmethod
-    """ def get_data(parent=None):
-        dialog = AddRDVDialog(parent)
-        dialog.exec_()
-        return dialog.return_strings()
- """
-
 class aScene(QGraphicsScene):
     def __init__(self, parent = None):
         self.Parent = parent
@@ -554,21 +403,17 @@ class aScene(QGraphicsScene):
         super(aScene, self).mousePressEvent(event)
         self.lastPoint =QPointF(event.pos().x() ,event.scenePos().y() - event.pos().y())
         self.mousePressed = True
-        #print("m")
 
     def mouseReleaseEvent(self, event):
         super(aScene, self).mouseReleaseEvent(event)
         self.mousePressed = False
     
     def mouseMoveEvent(self, event):
-        #super(aScene, self).mouseMoveEvent(event)
         if RestrictedHorizontaly and self.mousePressed: # boolean to trigger weather to restrict it horizontally 
             x = event.scenePos().x() - self.lastPoint.x()
             y = self.lastPoint.y() #+ event.pos().y()
             for item in self.selectedItems():
-                # delta = item.scenePos().x() - x
                 item.setPos(QPointF(x ,item.calculatedY))# which is the QgraphicItem that you have or selected before
-                #print("x: " + str(event.pos().x())+ " y : " + str(y))
 
     def delEvent(self):
         for item in self.selectedItems():

@@ -99,9 +99,6 @@ class calendrier():
                 textMois.setBrush(brushRDVtxt)
                 textMois.setParentItem(rectMois)
 
-
-                # textMois.setPos(200, i*280 + hWeekHead*((i+self.curWD)//7) - 75 )
-                # self.items.append(textSem)
                 rectMois.setPos(0,i*280 + hWeekHead*nbDimancheEntre(self.dateActuel,i))
 
 
@@ -121,13 +118,10 @@ class calendrier():
                 textSem.setBrush(brushTextSem)
                 textSem.setParentItem(rectSem)
 
-
-                # textSem.setPos(200, i*280 + hWeekHead*((i+self.curWD)//7) - 75 )
-                # self.items.append(textSem)
                 rectSem.setPos(0,i*280 + hWeekHead*nbDimancheEntre(self.dateActuel,i) - hWeekHead + 5 )
 
                 self.items.append(rectSem)
-                #self.items.append(textSem)
+                
 
             
 
@@ -137,18 +131,7 @@ class calendrier():
 
         self.tablRDV = []
         self.importSaveJSON('saved data.txt')
-        #self.importFileCSV("importCal.txt")
-        """ for RDV in self.tablRDV:
-            nbj=-RDV.date.daysTo(self.dateActuel)
-            if(RDV.unsetPos == True):
-                RDV.setPos(2, nbj* 280   +    hWeekHead*((nbj+self.curWD)//7)   +    20 +10*RDV.time.toHours())
-                RDV.unsetPos = False
-            else:
-                RDV.setPos(RDV.sX,nbj * 280   +    hWeekHead*((nbj+self.curWD)//7)   +    20 +10*RDV.time.toHours())
- """
-            #RDV.setPos(2,-RDV.date.daysTo(self.dateActuel) * 280 + 20 +10*RDV.time.toHours())
-            #self.items.append(RDV)
-            #print("appened")
+
         
 
     def h00posByDate(self,date):
@@ -202,11 +185,7 @@ class calendrier():
             self.addRDVInit(i[0],date,time,duree)
         
     def addOneRDV(self, titre, date, time, duree, X = None):
-        # if titre == "\"Techniques de Gestion APPLICATION\"":
-        #     f = 1
-        # if duree.toHours() == 0:
-        #     print("Erreur: événement" + titre + date.toString() +": durée non définie")
-        #     return
+
         hFin = time + duree
         if hFin.toHours() > 24:
             dureeAvtMinuit = Time(24,0) - time
@@ -303,7 +282,7 @@ class CDay(QGraphicsRectItem):
 class RDV(QGraphicsRectItem): # les dates sont censées etre des class:Date et les time, duree des class:Time
 
 
-    def __init__(self, name, date, time, duree, X = None):
+    def __init__(self, name, date, time, duree, X = None, Z = None):
         super().__init__()
         self.name = name
         self.date = date
@@ -314,6 +293,10 @@ class RDV(QGraphicsRectItem): # les dates sont censées etre des class:Date et l
         else:
             self.sX = X
             self.setPosY(X)
+
+        if(Z != None):
+            self.setZValue(Z)
+
         self.calculatedY = self.scenePos().y()
         dureeH = duree.toHours()
         self.setRect(5,0,100,dureeH*10)
