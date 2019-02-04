@@ -203,7 +203,8 @@ class Time():
         heure = self.heure - other.heure
         minute = self.minute - other.minute
         if minute < 0:
-            heure = heure + (minute / 60)
+            heure = heure - 1
+            minute = 60 + minute
         result = Time( heure, minute )
         return result
     

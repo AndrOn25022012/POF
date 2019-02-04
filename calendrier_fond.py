@@ -284,7 +284,7 @@ class RDV(QGraphicsRectItem): # les dates sont censées etre des class:Date et l
 
     def __init__(self, name, date, time, duree, X = None, Z = None):
         super().__init__()
-        self.name = name
+        self.name = "<br />".join(name.split("\n"))
         self.date = date
         self.time = time
         self.duree = duree
